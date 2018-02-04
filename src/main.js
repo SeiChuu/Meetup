@@ -8,6 +8,8 @@ import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
 import {store} from './store/index'
 import DateFilter from './filters/date'
+import AlertComponent from './components/Shared/Alert.vue'
+import EditMeetupComponent from './components/Meetup/EditMeetup.vue'
 
 Vue.use(Vuetify, {
   theme: {
@@ -24,6 +26,8 @@ Vue.use(Vuetify, {
 Vue.config.productionTip = false
 
 Vue.filter('date', DateFilter)
+Vue.component('app-alert', AlertComponent)
+Vue.component('edit-meetup', EditMeetupComponent)
 
 /* eslint-disable no-new */
 new Vue({
@@ -38,8 +42,16 @@ new Vue({
       authDomain: 'mymeetup-e2f5f.firebaseapp.com',
       databaseURL: 'https://mymeetup-e2f5f.firebaseio.com',
       projectId: 'mymeetup-e2f5f',
-      storageBucket: 'mymeetup-e2f5f.appspot.com',
+      storageBucket: 'gs://mymeetup-e2f5f.appspot.com/',
       messagingSenderId: '625450768470'
     })
+
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        this.$store.dispatch('autoSignin', user)
+      }
+    })
+
+    this.$store.dispatch('loadMeetups')
   }
 })

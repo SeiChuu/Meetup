@@ -8,7 +8,17 @@
         <v-btn large router to="/meetup/new" class="info">Organize Meetup</v-btn>
       </v-flex>
     </v-layout>
-    <v-layout row wrap class="mt-2">
+    <v-layout v-if="loading" class="mt-5">
+      <v-flex xs12 class="text-xs-center">
+        <v-progress-circular
+          indeterminate
+          color="primary"
+          :width="7"
+          :size="70"
+        ></v-progress-circular>
+      </v-flex>
+    </v-layout>
+    <v-layout row wrap class="mt-2" v-if="!loading && meetups.length > 0">
       <v-flex xs12>
         <v-carousel>
           <v-carousel-item
@@ -17,7 +27,7 @@
               :key="item.id"
           >
             <div class="title">
-              {{ item.title }}
+              <router-link :to="'/meetup/' + item.id" tag="span" style="cursor: pointer">{{ item.title }}</router-link>
             </div>
         </v-carousel-item>
         </v-carousel>
@@ -30,6 +40,9 @@
     computed: {
       meetups () {
         return this.$store.getters.featuredMeetups
+      },
+      loading () {
+        return this.$store.getters.loading
       }
     }
   }
