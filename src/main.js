@@ -9,7 +9,10 @@ import 'vuetify/dist/vuetify.min.css'
 import {store} from './store/index'
 import DateFilter from './filters/date'
 import AlertComponent from './components/Shared/Alert.vue'
-import EditMeetupComponent from './components/Meetup/EditMeetup.vue'
+import EditMeetupDetailsComponent from './components/Meetup/EditMeetupDetails.vue'
+import EditMeetupDateComponent from './components/Meetup/EditMeetupDate.vue'
+import EditMeetupTimeComponent from './components/Meetup/EditMeetupTime.vue'
+import RegisterMeetupComponent from './components/Meetup/RegisterMeetup.vue'
 
 Vue.use(Vuetify, {
   theme: {
@@ -27,7 +30,10 @@ Vue.config.productionTip = false
 
 Vue.filter('date', DateFilter)
 Vue.component('app-alert', AlertComponent)
-Vue.component('edit-meetup', EditMeetupComponent)
+Vue.component('edit-meetup-detail', EditMeetupDetailsComponent)
+Vue.component('edit-meetup-date', EditMeetupDateComponent)
+Vue.component('edit-meetup-time', EditMeetupTimeComponent)
+Vue.component('register-meetup', RegisterMeetupComponent)
 
 /* eslint-disable no-new */
 new Vue({
@@ -49,6 +55,7 @@ new Vue({
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
         this.$store.dispatch('autoSignin', user)
+        this.$store.dispatch('fetchUserData')
       }
     })
 

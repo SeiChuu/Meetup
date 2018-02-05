@@ -1,35 +1,34 @@
 <template>
   <v-dialog width="350px" persistent v-model="editDialog">
     <v-btn floating accent slot="activator">
-      <v-icon>edit</v-icon>
+      Edit Time
     </v-btn>
     <v-card>
       <v-container>
         <v-layout row wrap>
           <v-flex xs12>
-            <v-card-title>Edit Meetup</v-card-title>
+            <v-card-title>Edit Meetup Time</v-card-title>
           </v-flex>
         </v-layout>
         <v-divider></v-divider>
         <v-layout row wrap>
           <v-flex xs12>
-            <v-card-text>
-              <v-text-field
-                name="title"
-                label="Title"
-                id="title"
-                v-model="editTitle"
-                required=""
-              ></v-text-field>
-              <v-text-field
-                name="description"
-                label="Description"
-                id="description"
-                v-model="editDescription"
-                multi-line
-                required=""
-              ></v-text-field>
-            </v-card-text>
+            <v-time-picker v-model="editTime" style="width: 100%" actions>
+                <v-btn
+                  class="blue--text darken-1"
+                  flat
+                  @click.native="editDialog = false"
+                >
+                  Close
+                </v-btn>
+                <v-btn
+                  class="blue--text darken-1"
+                  flat
+                  @click.native="onSave"
+                >
+                  Save
+                </v-btn>
+            </v-time-picker>
           </v-flex>
         </v-layout>
         <v-layout row wrap>
@@ -44,28 +43,35 @@
     </v-card>
   </v-dialog>
 </template>
+
 <script>
 export default {
   props: ['meetup'],
   data () {
     return {
       editDialog: false,
-      editTitle: this.meetup.title,
-      editDescription: this.meetup.description
+      editTime: null
     }
   },
   methods: {
     onSave () {
-      if (this.editTitle.trim() === '' || this.editDescription.trim() === '') {
-        return
-      }
-      this.editDialog = false
+      const newDate = new Date(this.meetup.date)
+
+      let hours = this.editTime.match(/^(\d+)/)[1]
+      const minutes = this.editTime.match(/:(\d+)/)[1]
+
+      newDate.setHours(hours)
+      newDate.setMinutes(minutes)
+
       this.$store.dispatch('updateMeetupData', {
         id: this.meetup.id,
-        title: this.editTitle,
-        description: this.editDescription
+        date: newDate
       })
     }
+  },
+  created () {
+    this.editTime = new Date(this.meetup.date).toTimeString()
   }
 }
 </script>
+
